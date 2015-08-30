@@ -36,6 +36,10 @@ when "centos", "redhat", "amazon", "scientific"
     curl
     git
   }
+when "mac_os_x"
+    install_packages = %w{
+    git
+  }
 end
 
 install_packages.each do |p|
