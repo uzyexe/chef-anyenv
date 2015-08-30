@@ -92,14 +92,14 @@ if node['platform'] == 'mac_os_x' do
   # Support /etc/profile.d
   cookbook_file "/etc/profile" do
     source "osx-profile"
-    mode 0755
+    mode '0755'
   end
 
   # Add /etc/profile.d
   directory "/etc/profile.d" do
     owner 'root'
     group 'wheel'
-    mode 0755
+    mode '0755'
   end
 end
 
