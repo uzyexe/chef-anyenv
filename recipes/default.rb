@@ -11,13 +11,32 @@ node.default_unless[:user][:name] = node[:current_user]
 node.default_unless[:user][:home] = node[:etc][:passwd]["#{node[:user][:name]}"][:dir]
 
 # install required packages
-install_packages = %w{
-  make
-  curl
-  libsqlite3-dev
-  libbz2-dev
-  git
-}
+case node['platform']
+when 'debian', 'ubuntu'
+  install_packages = %w{
+    git
+    gcc
+    make
+    openssl
+    libssl-dev
+    libbz2-dev
+    libreadline-dev
+    libsqlite3-dev
+    curl
+  }
+when 'redhat', 'centos', 'fedora'
+    install_packages = %w{
+    gcc
+    bzip2
+    bzip2-devel
+    openssl
+    openssl-devel
+    readline
+    readline-devel
+    curl
+    git
+  }
+end
 
 install_packages.each do |p|
   package p do
