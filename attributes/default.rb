@@ -1,4 +1,4 @@
-default[:anyenv] = {
+default['anyenv'] = {
   "perl"    => {
     versions:   %w{5.22.0},
     global:     "5.22.0"
