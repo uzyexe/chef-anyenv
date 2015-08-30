@@ -24,7 +24,7 @@ when 'debian', 'ubuntu'
     libsqlite3-dev
     curl
   }
-when 'redhat', 'centos', 'fedora'
+when "centos", "redhat", "amazon", "scientific"
     install_packages = %w{
     gcc
     bzip2
