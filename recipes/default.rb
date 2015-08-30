@@ -8,7 +8,7 @@
 #
 
 node.default_unless['user']['name'] = node['current_user']
-node.default_unless['user']['home'] = node['etc']['passwd']["#{node['user']['name']}"][':dir']
+node.default_unless['user']['home'] = node['etc']['passwd'][node['user']['name']][':dir']
 
 # install required packages
 case node['platform']
