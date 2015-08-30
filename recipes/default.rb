@@ -88,7 +88,7 @@ anyenv_map.keys.each do |program|
   end
 end
 
-if node['platform'] == 'mac_os_x' do
+if node['platform'] == 'mac_os_x'
   # Support /etc/profile.d
   cookbook_file "/etc/profile" do
     source "osx-profile"
