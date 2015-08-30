@@ -101,7 +101,7 @@ anyenv_map.keys.each do |program|
     # set global
     install_script << "#{anyenv_map[program]} global #{version};" if version == anyenv[program]['global']
 
-    bash "#{program} - #{version}" do
+    bash "#{program} - #{version} at #{node['user']['home']}/.anyenv" do
       user node['user']['name']
       cwd node['user']['home']
       environment "HOME" => node['user']['home']
