@@ -1,2 +1,4 @@
 export PATH="$HOME/.anyenv/bin:$PATH"
-eval "$(anyenv init -)"
+if hash anyenv 2>/dev/null; then
+  eval "$(anyenv init -)"
+fi
