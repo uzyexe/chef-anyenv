@@ -47,3 +47,8 @@ anyenv.(perl|ruby|node|python|php)
 # Authors and Contributors
 
 * Shuji Yamada (<uzy.exe@gmail.com>)
+
+
+## License
+
+This project is licensed under the terms of the MIT license.
