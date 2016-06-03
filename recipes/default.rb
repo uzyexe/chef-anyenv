@@ -8,6 +8,7 @@
 #
 
 node.default_unless['user']['name'] = node['current_user']
+node.default_unless['user']['group'] = node['current_user']
 node.default_unless['user']['home'] = node['etc']['passwd'][node['user']['name']]['dir']
 
 # install required packages
@@ -20,6 +21,7 @@ when 'debian', 'ubuntu'
     openssl
     libssl-dev
     libbz2-dev
+    libffi-dev
     libreadline-dev
     libsqlite3-dev
     curl
@@ -29,6 +31,7 @@ when "centos", "redhat", "amazon", "scientific"
     gcc
     bzip2
     bzip2-devel
+    libffi-devel
     openssl
     openssl-devel
     readline
@@ -45,69 +48,6 @@ end
 install_packages.each do |p|
   package p do
     action :install
-  end
-end
-
-# install anyenv
-bash "anyenv" do
-  user node['user']['name']
-  cwd  node['user']['home']
-  environment "HOME" => node['user']['home']
-
-  code <<-EOC
-    git clone https://github.com/riywo/anyenv $HOME/.anyenv
-    echo 'export PATH="$HOME/.anyenv/bin:$PATH"' >> $HOME/.bashrc
-    echo 'eval "$(anyenv init -)"' >> $HOME/.bashrc
-  EOC
-  not_if { File.exist?("#{node['user']['home']}/.anyenv") }
-end
-
-# install *env
-anyenvs = %w{plenv ndenv rbenv pyenv phpenv}
-anyenvs.each do |install_env|
-  bash install_env do
-    user node['user']['name']
-    cwd node['user']['home']
-    environment "HOME" => node['user']['home']
-
-    code <<-EOC
-      export PATH="$HOME/.anyenv/bin:$PATH"
-      eval "$(anyenv init -)"
-      anyenv install #{install_env}
-    EOC
-    not_if { File.exist?("#{node['user']['home']}/.anyenv/envs/#{install_env}") }
-  end
-end
-
-# install program
-anyenv_map = {
-  "perl"   => "plenv",
-  "ruby"   => "rbenv",
-  "node"   => "ndenv",
-  "python" => "pyenv",
-  "php"    => "phpenv",
-}
-anyenv_map.keys.each do |program|
-  anyenv = node['anyenv']
-  next unless anyenv.key?(program)
-  anyenv[program]['versions'].each do |version|
-    install_script = <<-EOC
-      export PATH="$HOME/.anyenv/bin:$PATH"
-      eval "$(anyenv init -)"
-      exec $SHELL -l
-      #{anyenv_map[program]} install #{version};
-    EOC
-
-    # set global
-    install_script << "#{anyenv_map[program]} global #{version};" if version == anyenv[program]['global']
-
-    bash "#{program} - #{version} at #{node['user']['home']}/.anyenv" do
-      user node['user']['name']
-      cwd node['user']['home']
-      environment "HOME" => node['user']['home']
-      code install_script
-      not_if { File.exist?("#{node['user']['home']}/.anyenv/envs/#{anyenv_map[program]}/versions/#{version}") }
-    end
   end
 end
 
@@ -129,4 +69,58 @@ end
 cookbook_file "/etc/profile.d/anyenv.sh" do
   source "anyenv-profile.sh"
   mode 0755
+end
+
+# install anyenv
+execute "install anyenv" do
+  user node['user']['name']
+  group node['user']['group']
+  cwd  node['user']['home']
+  environment "HOME" => node['user']['home']
+  command "git clone https://github.com/riywo/anyenv $HOME/.anyenv"
+  not_if { File.exist?("#{node['user']['home']}/.anyenv") }
+end
+
+# install *env
+anyenvs = %w{plenv ndenv rbenv pyenv phpenv}
+anyenvs.each do |install_env|
+  bash install_env do
+    user node['user']['name']
+    group node['user']['group']
+    cwd node['user']['home']
+    environment "HOME" => node['user']['home']
+    code <<-EOC
+      . /etc/profile
+      anyenv install #{install_env}
+    EOC
+    not_if { File.exist?("#{node['user']['home']}/.anyenv/envs/#{install_env}") }
+  end
+end
+
+# install specified versions through *env
+anyenv_map = {
+  "perl"   => "plenv",
+  "ruby"   => "rbenv",
+  "node"   => "ndenv",
+  "python" => "pyenv",
+  "php"    => "phpenv",
+}
+anyenv_map.keys.each do |program|
+  anyenv = node['anyenv']
+  next unless anyenv.key?(program)
+  anyenv[program]['versions'].each do |version|
+    install_script = <<-EOC
+      . /etc/profile
+      #{anyenv_map[program]} install #{version}
+    EOC
+    install_script << "#{anyenv_map[program]} global #{version};" if version == anyenv[program]['global']
+
+    execute "#{program} - #{version} at #{node['user']['home']}/.anyenv" do
+      environment "HOME" => node['user']['home']
+      user node['user']['name']
+      group node['user']['group']
+      command install_script
+      not_if { File.exist?("#{node['user']['home']}/.anyenv/envs/#{anyenv_map[program]}/versions/#{version}") }
+    end
+  end
 end
