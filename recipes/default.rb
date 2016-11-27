@@ -61,7 +61,6 @@ if node['platform'] == 'mac_os_x'
   # Add /etc/profile.d
   directory '/etc/profile.d' do
     owner 'root'
-    group node['root_group']
     mode '0755'
   end
 end
