@@ -52,13 +52,12 @@ install_packages.each do |p|
 end
 
 if node['platform'] == 'mac_os_x'
-  # Support /etc/profile.d
   cookbook_file '/etc/profile' do
     source 'osx-profile'
+    owner 'root'
     mode '0755'
   end
 
-  # Add /etc/profile.d
   directory '/etc/profile.d' do
     owner 'root'
     mode '0755'
