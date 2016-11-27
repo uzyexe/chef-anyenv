@@ -53,26 +53,27 @@ end
 
 if node['platform'] == 'mac_os_x'
   # Support /etc/profile.d
-  cookbook_file "/etc/profile" do
-    source "osx-profile"
+  cookbook_file '/etc/profile' do
+    source 'osx-profile'
     mode '0755'
   end
 
   # Add /etc/profile.d
-  directory "/etc/profile.d" do
+  directory '/etc/profile.d' do
     owner 'root'
     group node['root_group']
     mode '0755'
   end
 end
 
-cookbook_file "/etc/profile.d/anyenv.sh" do
-  source "anyenv-profile.sh"
-  mode 0755
+template '/etc/profile.d/anyenv.sh' do
+  source 'anyenv.sh.erb'
+  owner 'root'
+  mode '0755'
 end
 
 # install anyenv
-execute "install anyenv" do
+execute 'install anyenv' do
   user node['user']['name']
   group node['user']['group']
   cwd  node['user']['home']

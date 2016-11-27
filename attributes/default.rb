@@ -1,3 +1,5 @@
+default['anyenv']['root_path'] = '/usr/local/anyenv'
+
 default['anyenv'] = {
   "perl"    => {
     versions:   %w{5.22.0},
