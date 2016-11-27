@@ -12,7 +12,28 @@ Installs and configures anyenv and \*env
 
 ## Attributes
 
-anyenv.(perl|ruby|node|python|php)
+  Renv
+  crenv
+  denv
+  erlenv
+  exenv
+  goenv
+  hsenv
+  jenv
+  luaenv
+  ndenv
+  nenv
+  nodenv
+  phpenv
+  plenv
+  pyenv
+  rbenv
+  sbtenv
+  scalaenv
+  swiftenv
+
+
+anyenv.(renv|crenv|denv|erlenv|exenv|goenv|jenv|luaenv|ndenv|nenv|nodenv|phpenv|plenv|pyenv|rbenv|sbtenv|scalaenv|swiftenv)
   .versions: install versions
   .global: set to global version
 

@@ -1,29 +1,32 @@
+default['anyenv']['user'] = ""
+
+# git repository containing anyenv
+default['anyenv']['git_url'] = 'https://github.com/riywo/anyenv.git'
+default['anyenv']['git_ref'] = 'master'
+
+# whether to create profile.d shell script
+default['anyenv']['create_profiled'] = true
+
+# extra system-wide tunables
 default['anyenv']['root_path'] = '/usr/local/anyenv'
 
-default['anyenv'] = {
-  "perl"    => {
-    versions:   %w{5.24.0},
-    global:     "5.24.0"
-  },
-
-  "ruby"    => {
-    versions:   %w{2.3.3},
-    global:     "2.3.3"
-  },
-
-  "node"    => {
-    versions:  %w{v6.9.1},
-    global:    "v6.9.1"
-  },
-
-  "python"  => {
-    versions:   %w{2.7.12 3.4.5},
-    global:     "2.7.12"
-  },
-
-  "php"     => {
-    versions:   %w{5.6.28 7.0.13},
-    global:     "5.6.28"
-  }
-};
-
+case node['platform_family']
+when 'rhel', 'fedora'
+  default['anyenv']['install_pkgs'] = %w(git grep)
+  default['anyenv']['user_home_root'] = '/home'
+when 'debian', 'suse'
+  default['anyenv']['install_pkgs'] = %w(git-core grep)
+  default['anyenv']['user_home_root'] = '/home'
+when 'mac_os_x'
+  default['anyenv']['install_pkgs'] = %w(git)
+  default['anyenv']['user_home_root'] = '/Users'
+when 'freebsd'
+  default['anyenv']['install_pkgs'] = %w(git bash)
+  default['anyenv']['user_home_root'] = '/usr/home'
+when 'gentoo'
+  default['anyenv']['install_pkgs'] = %w(git)
+  default['anyenv']['user_home_root'] = '/home'
+when 'arch'
+  default['anyenv']['install_pkgs'] = %w(git grep)
+  default['anyenv']['user_home_root'] = '/home'
+end
