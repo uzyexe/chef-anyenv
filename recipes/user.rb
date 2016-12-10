@@ -9,8 +9,13 @@
 
 include_recipe 'anyenv::user_install'
 
-node.default_unless['user']['name'] = node['anyenv']['user']
-node.default_unless['user']['home'] = "#{node['anyenv']['user_home_root']}/#{node['user']['name']}"
+node.default_unless['user']['name'] = node['anyenv']['user'] || ENV['USER']
+
+if node['anyenv']['user']
+  node.default_unless['user']['home'] = "#{node['anyenv']['user_home_root']}/#{node['user']['name']}"
+else
+  node.default_unless['user']['home'] = ENV['HOME']
+end
 
 anyenvs = %w{
   Renv

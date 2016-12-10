@@ -1,4 +1,4 @@
-default['anyenv']['user'] = ""
+default['anyenv']['user'] = nil
 
 # git repository containing anyenv
 default['anyenv']['git_url'] = 'https://github.com/riywo/anyenv.git'
