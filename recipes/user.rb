@@ -70,7 +70,6 @@ anyenv_map = {
   "ruby"     => "rbenv",
   "sbt"      => "sbtenv",
   "scala"    => "scalaenv",
-  "swift"    => "swiftenv",
 }
 anyenv_map.keys.each do |program|
   anyenv = node['anyenv']
