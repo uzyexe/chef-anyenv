@@ -9,9 +9,6 @@
 
 include_recipe 'anyenv::system_install'
 
-node.default_unless['user']['name'] = 'root'
-node.default_unless['user']['home'] = '/root'
-
 anyenvs = %w{
   Renv
   crenv
@@ -36,14 +33,14 @@ anyenvs = %w{
 
 anyenvs.each do |install_env|
   bash install_env do
-    user node['user']['name']
-    cwd node['user']['home']
-    environment "HOME" => node['user']['home']
+    user 'root'
+    cwd node['anyenv']['system_home']
+    environment "HOME" => node['anyenv']['system_home']
     code <<-EOC
       . /etc/profile
       anyenv install #{install_env}
     EOC
-    not_if { File.exist?("#{node['user']['home']}/.anyenv/envs/#{install_env}") }
+    not_if { File.exist?("#{node['anyenv']['system_home']}/.anyenv/envs/#{install_env}") }
   end
 end
 
@@ -77,11 +74,11 @@ anyenv_map.keys.each do |program|
     EOC
     install_script << "#{anyenv_map[program]} global #{version};" if version == anyenv[program]['global']
 
-    execute "#{program} - #{version} at #{node['user']['home']}/.anyenv" do
-      environment "HOME" => node['user']['home']
-      user node['user']['name']
+    execute "#{program} - #{version} at #{node['anyenv']['system_home']}/.anyenv" do
+      environment "HOME" => node['anyenv']['system_home']
+      user 'root'
       command install_script
-      not_if { File.exist?("#{node['user']['home']}/.anyenv/envs/#{anyenv_map[program]}/versions/#{version}") }
+      not_if { File.exist?("#{node['anyenv']['system_home']}/.anyenv/envs/#{anyenv_map[program]}/versions/#{version}") }
     end
   end
 end

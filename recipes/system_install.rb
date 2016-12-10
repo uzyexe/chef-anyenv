@@ -7,9 +7,6 @@
 # All rights reserved - Do Not Redistribute
 #
 
-node.default_unless['user']['name'] = 'root'
-node.default_unless['user']['home'] = '/root'
-
 # install required packages
 case node['platform']
 when 'debian', 'ubuntu'
@@ -73,7 +70,7 @@ end
 # install anyenv
 execute 'install anyenv' do
   user 'root'
-  cwd  node['user']['home']
-  command "git clone #{node['anyenv']['git_url']} #{node['user']['home']}/.anyenv"
-  not_if { File.exist?("#{node['user']['home']}/.anyenv") }
+  cwd  node['anyenv']['system_home']
+  command "git clone #{node['anyenv']['git_url']} #{node['anyenv']['system_home']}/.anyenv"
+  not_if { File.exist?("#{node['anyenv']['system_home']}/.anyenv") }
 end

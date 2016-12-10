@@ -56,12 +56,9 @@ if node['platform'] == 'mac_os_x'
     owner 'root'
     mode '0755'
   end
-
-  directory '/etc/profile.d' do
-    owner 'root'
-    mode '0755'
-  end
 end
+
+directory '/etc/profile.d'
 
 template '/etc/profile.d/anyenv.sh' do
   source 'anyenv.sh.erb'
@@ -72,8 +69,8 @@ end
 
 # install anyenv
 execute 'install anyenv' do
-  user node['anyenv']['user']
+  user node['user']['name']
   cwd  node['user']['home']
-  command "git clone #{node['anyenv']['git_url']} #{node['user']['home']}/.anyenv"
+  command "git clone #{node['anyenv']['git_url']} .anyenv"
   not_if { File.exist?("#{node['user']['home']}/.anyenv") }
 end
