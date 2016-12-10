@@ -56,6 +56,11 @@ if node['platform'] == 'mac_os_x'
     owner 'root'
     mode '0755'
   end
+
+  directory '/etc/profile.d' do
+    owner 'root'
+    mode '0755'
+  end
 end
 
 template '/etc/profile.d/anyenv.sh' do
